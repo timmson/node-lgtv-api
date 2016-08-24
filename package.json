@@ -19,5 +19,9 @@
   "license": "GPL",
   "bugs": {
     "url": "https://github.com/timmson/node-lgtv-api/issues"
+  },
+  "dependencies": {
+    "xml2js": "~0.4.17",
+    "request": "~2.74.0"
   }
 }
