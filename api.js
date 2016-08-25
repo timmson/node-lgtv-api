@@ -15,10 +15,6 @@ function LgTvApi(_host, _port, _pairingKey) {
     this.session = null;
 }
 
-LgTvApi.prototype.setPairingKey = function (_pairingKey) {
-    this.pairingKey = _pairingKey;
-};
-
 LgTvApi.prototype.displayPairingKey = function () {
     this.sendXMLRequest('/roap/api/auth', {auth: {type: 'AuthKeyReq'}});
 };
@@ -44,7 +40,7 @@ LgTvApi.prototype.sendXMLRequest = function (path, params) {
         if (err) {
             console.error(err);
         } else {
-            console.log('Response: ' + reponse.status);
+            console.log('Response: ' + reponse.statusCode);
             console.log('Body: ' + respBody);
         }
     });
