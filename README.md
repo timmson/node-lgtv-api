@@ -1,5 +1,5 @@
-Node LG TV API
-==============
+Node LG TV API [under development]
+==================================
 
 A NODE API for the LG SmartTV (2012+) which makes it easy for you to remote control your TV with code.
 You're able to execute simple/special commands and queries (change channel, get current channel,
