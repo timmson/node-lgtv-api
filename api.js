@@ -4,14 +4,12 @@ var xml2js = require('xml2js');
 var xmlBuilder = new xml2js.Builder();
 var xmlParser = new xml2js.Parser();
 
-
 module.exports = LgTvApi;
 
 function LgTvApi(_host, _port, _pairingKey) {
     this.host = _host;
     this.port = _port;
     this.pairingKey = _pairingKey;
-    this.pairingKey = null;
     this.session = null;
 }
 
