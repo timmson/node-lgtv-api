@@ -21,15 +21,16 @@ LgTvApi.prototype.authenticate = function () {
     if (this.pairingKey === null) {
         this.displayPairingKey();
     }
-    this.sendXMLRequest('/roap/api/auth', {auth: {type: 'AuthKeyReq', value: this.pairingKey}});
+    this.sendXMLRequest('/roap/api/auth', {auth: {type: 'AuthReq', value: this.pairingKey}});
 };
 
 LgTvApi.prototype.sendXMLRequest = function (path, params) {
     var reqBody = xmlBuilder.buildObject(params);
+    console.info(reqBody);
     var uri = 'http://' + this.host + ':' + this.port + path;
     var options = {
         headers: {
-            'Content-Type': 'application/atom+xmlBuilder',
+            'Content-Type': 'application/atom+xml',
             'Connection': 'Keep-Alive'
         },
         body: reqBody
@@ -40,6 +41,15 @@ LgTvApi.prototype.sendXMLRequest = function (path, params) {
         } else {
             console.log('Response: ' + reponse.statusCode);
             console.log('Body: ' + respBody);
+            xmlParser.parseString(respBody , function (err1, data) {
+                if (err1) {
+                    console.error(err1);
+                } else {
+                    console.log(data.envelope.session[0]);
+                }
+                
+            });
+
         }
     });
     /*    if (isset($execute['ROAPError']) && $execute['ROAPError'] != '200') {
