@@ -8,13 +8,13 @@ tvApi.authenticate(function (err, sessionKey) {
             console.error(err);
         } else {
             async.parallel([
+                /*function (callback) {
+                 tvApi.processCommand(tvApi.TV_CMD_MUTE_TOGGLE, [], function (err, data) {
+                 callback(err, data);
+                 })
+                 },*/
                 function (callback) {
-                    tvApi.processCommand(tvApi.TV_INFO_VOLUME, function (err, data) {
-                        callback(err, data);
-                    })
-                },
-                function (callback) {
-                    tvApi.queryData(tvApi.TV_INFO_SCREEN, function (err, data) {
+                    tvApi.queryData(tvApi.TV_INFO_CHANNEL_LIST, function (err, data) {
                         callback(err, data);
                     });
                 }
@@ -22,21 +22,6 @@ tvApi.authenticate(function (err, sessionKey) {
             ], function (err, data) {
                 console.log(data);
             })
-        }
-    }
-);
-
-tvApi.authenticate(function (err, sessionKey) {
-        if (err) {
-            console.error(err);
-        } else {
-            tvApi.queryData(tvApi.TV_INFO_SCREEN, function (err, data) {
-                if (err) {
-                    console.error(err);
-                } else {
-                    console.log(data);
-                }
-            });
         }
     }
 );
