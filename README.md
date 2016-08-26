@@ -15,16 +15,47 @@ This project inspired by [PHP-LG-SmartTV by SteveWinfield](https://github.com/St
 npm install node-lgtv-api
 ```
 
-## How to connect to your TV
+## How to request pairing key
 
 ```js
-TO BE DONE
+var TvApi = require('./api.js');
+var tvApi = new TvApi('192.168.0.5', '8080'); //for key request
+tvApi.displayPairingKey(function (err) {
+    if (err) {
+        console.log(err);
+    }
+});
+```
+
+## How to authorize to your TV
+
+```js
+var TvApi = require('./api.js');
+var tvApi = new TvApi('192.168.0.5', '8080', '879540'); //for key request
+tvApi.authenticate(function (err, sessionKey) {
+    console.log(sessionKey);
+});
 ```
 
 ## How to execute a simple command
 
 ```js
-TO BE DONE
+ar TvApi = require('./api.js');
+var tvApi = new TvApi('192.168.0.5', '8080', '879540'); //for key request
+tvApi.authenticate(function (err, sessionKey) {
+        if (err) {
+            console.error(err);
+        } else {
+            tvApi.processCommand(tvApi.TV_CMD_MUTE_TOGGLE, function (err, data) {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.log(data);
+                }
+            });
+        }
+    }
+);
 ```
 
 ## How to execute a special command
@@ -42,13 +73,43 @@ TO BE DONE
 # How to query data
 
 ```js
-TO BE DONE
+var TvApi = require('./api.js');
+var tvApi = new TvApi('192.168.0.5', '8080', '879540'); //for key request
+tvApi.authenticate(function (err, sessionKey) {
+        if (err) {
+            console.error(err);
+        } else {
+            tvApi.processCommand(tvApi.TV_INFO_VOLUME, function (err, data) {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.log(data);
+                }
+            });
+        }
+    }
+);
 ```
 
 # How to save a screenshot
 
 ```js
-TO BE DONE
+var TvApi = require('./api.js');
+var tvApi = new TvApi('192.168.0.5', '8080', '879540'); //for key request
+tvApi.authenticate(function (err, sessionKey) {
+        if (err) {
+            console.error(err);
+        } else {
+            tvApi.queryData(tvApi.TV_INFO_SCREEN, function (err, data) {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.log(data);
+                }
+            });
+        }
+    }
+);
 ```
 
 # List of commands and queries (+ Documentation links)

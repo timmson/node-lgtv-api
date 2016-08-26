@@ -16,19 +16,13 @@ function LgTvApi(_host, _port, _pairingKey) {
 }
 
 LgTvApi.prototype.displayPairingKey = function (functionCallback) {
-    async.waterfall([
-            function (callback) {
-                this.sendXMLRequest('/roap/api/auth', {auth: {type: 'AuthKeyReq'}}, callback)
-            }], function (err, data) {
-            if (err) {
-                console.error(err);
-                functionCallBack(err, null)
-            } else {
-                console.log(data.envelope.session[0]);
-                functionCallBack(err, data.envelope.session[0]);
-            }
+    this.sendXMLRequest('/roap/api/auth', {auth: {type: 'AuthKeyReq'}}, (function (err, response, data) {
+        if (err || response.statusCode != 200) {
+            functionCallback(err != null ? err : new Error('Response code:' + response.statusCode));
+        } else {
+            functionCallback(null);
         }
-    ).bind(this);
+    }).bind(this));
 };
 
 LgTvApi.prototype.authenticate = function (functionCallback) {
@@ -37,55 +31,33 @@ LgTvApi.prototype.authenticate = function (functionCallback) {
     } else {
         async.waterfall([
             (function (callback) {
-                this.sendXMLRequest('/roap/api/auth', {auth: {type: 'AuthReq'}}, callback)
+                this.sendXMLRequest('/roap/api/auth', {auth: {type: 'AuthReq', value: this.pairingKey}}, callback)
             }).bind(this),
-            (function (err, resposne, respBody, callback) {
-                if (err) {
-                    console.error(err);
+            (function (err, response, respBody, callback) {
+                if (err || response.statusCode != 200) {
+                    var ownErr = err != null ? err : new Error('Response code:' + response.statusCode);
+                    callback(ownErr, data);
                 } else {
-                    console.log('Response: ' + reponse.statusCode);
-                    console.log('Body: ' + respBody);
-                    xmlParser.parseString(respBody, function (err, data) {
-                        callback(null, err, data);
-                    });
-
+                    xmlParser.parseString(respBody, callback);
                 }
             }).bind(this)
-        ], function (err, data) {
+        ], (function (err, data) {
             if (err) {
-                console.error(err);
                 functionCallback(err, null)
             } else {
-                console.log(data.envelope.session[0]);
-                functionCallback(err, data.envelope.session[0]);
+                this.session = data.envelope.session[0];
+                functionCallback(err, this.session);
             }
-        });
+        }).bind(this));
     }
 };
 
-LgTvApi.prototype.sendXMLRequest = function (path, params, callback) {
-    var reqBody = xmlBuilder.buildObject(params);
-    console.info(reqBody);
-    var uri = 'http://' + this.host + ':' + this.port + path;
-    var options = {
-        headers: {
-            'Content-Type': 'application/atom+xml',
-            'Connection': 'Keep-Alive'
-        },
-        body: reqBody
-    };
-    request.post(uri, options, function (err, response, respBody) {
-        callback(null, err, response, respBody);
-    });
-};
-
-LgTvApi.prototype.processCommand = function (commandName, parameters) {
+LgTvApi.prototype.processCommand = function (commandName, parameters, functionCallback) {
     if (this.session === null) {
-        throw new Error('No session id given.');
+        functionCallback(new Error("No session id"));
     }
 
     var commandName = '';
-
     if (!isNaN(parseInt(commandName)) && parameters.length < 1) {
         parameters.value = commandName;
         commandName = 'HandleKeyInput';
@@ -97,7 +69,61 @@ LgTvApi.prototype.processCommand = function (commandName, parameters) {
 
     parameters.name = commandName;
 
-    this.sendXMLRequest('/roap/api/command', {'command': parameters});
+    async.waterfall([
+        (function (callback) {
+            this.sendXMLRequest('/roap/api/command', {command: parameters}, callback);
+        }).bind(this),
+        (function () {
+
+        }).bind(this),
+        (function (err, response, respBody, callback) {
+            if (err || response.statusCode != 200) {
+                var ownErr = err != null ? err : new Error('Response code:' + response.statusCode);
+                callback(ownErr, data);
+            } else {
+                xmlParser.parseString(respBody, callback);
+            }
+        }).bind(this)
+
+    ], (function (err, data) {
+        if (err) {
+            functionCallback(err, null)
+        } else {
+            functionCallback(err, data);
+        }
+    }).bind(this));
+
+};
+
+LgTvApi.prototype.queryData = function (targetId, functionCallback) {
+    if (this.session === null) {
+        functionCallback(new Error("No session id"));
+    }
+
+    this.sendXMLRequest('/roap/api/data?target=' + targetId, {}, (function (err, response, data) {
+        if (err || response.statusCode != 200) {
+            functionCallback(err != null ? err : new Error('Response code:' + response.statusCode));
+        } else {
+            functionCallback(null, data);
+        }
+    }).bind(this));
+};
+
+LgTvApi.prototype.sendXMLRequest = function (path, params, callback) {
+    var reqBody = xmlBuilder.buildObject(params);
+    console.info('REQ:' + reqBody);
+    var uri = 'http://' + this.host + ':' + this.port + path;
+    var options = {
+        headers: {
+            'Content-Type': 'application/atom+xml',
+            'Connection': 'Keep-Alive'
+        },
+        body: reqBody
+    };
+    request.post(uri, options, function (err, response, respBody) {
+        console.info('RESP:' + respBody);
+        callback(err, response, respBody);
+    });
 };
 
 /*
