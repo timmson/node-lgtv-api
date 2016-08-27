@@ -1,4 +1,5 @@
 var request = require('request');
+var fs = require('fs');
 var xml2js = require('xml2js');
 var async = require('async');
 
@@ -99,14 +100,38 @@ LgTvApi.prototype.queryData = function (targetId, functionCallback) {
     if (this.session === null) {
         functionCallback(new Error("No session id"));
     }
-
-    this.sendRequest('/roap/api/data?target=' + targetId, function (errCallBack, err, response, data) {
-        if (err || response.statusCode != 200) {
-            functionCallback(err != null ? err : new Error('Response code:' + response.statusCode));
+    async.waterfall([
+        (function (callback) {
+            this.sendRequest('/roap/api/data?target=' + targetId, callback);
+        }).bind(this),
+        (function (err, response, data, callback) {
+            if (err || response.statusCode != 200) {
+                callback(err != null ? err : new Error('Response code:' + response.statusCode));
+            } else {
+                xmlParser.parseString(data, callback);
+            }
+        }).bind(this)
+    ], function (err, data) {
+        if (err) {
+            functionCallback(err, null)
         } else {
-            functionCallback(null, data);
+            functionCallback(err, data.envelope.data);
         }
     });
+
+};
+
+LgTvApi.prototype.takeScreenShot = function (fileName, functionCallback) {
+    var path = '/roap/api/data?target=' + this.TV_INFO_SCREEN
+    console.info('REQ path:' + path);
+    var uri = 'http://' + this.host + ':' + this.port + path;
+    var options = {
+        headers: {
+            'Content-Type': 'application/atom+xml',
+            'Connection': 'Keep-Alive'
+        }
+    };
+    request.get(uri, options).pipe(fs.createWriteStream(fileName)).on('close', functionCallback);
 };
 
 LgTvApi.prototype.sendXMLRequest = function (path, params, callback) {
@@ -133,25 +158,13 @@ LgTvApi.prototype.sendRequest = function (path, callback) {
         headers: {
             'Content-Type': 'application/atom+xml',
             'Connection': 'Keep-Alive'
-        },
-        body: ''
+        }
     };
-    request.post(uri, options, function (err, response, data) {
+    request.get(uri, options, function (err, response, data) {
         console.info('RESP:' + data);
         callback(null, err, response, data);
     });
 };
-
-/*
- function queryData($targetId) {
- if (this.session === null) {
- throw new Exception('No session id given.');
- }
- $var = this.sendXMLRequest('/roap/api/data?target='.$targetId);
- return isset($var['data']) ? $var['data'] : $var;
- }
- */
-
 
 LgTvApi.prototype.TV_CMD_POWER = 1;
 LgTvApi.prototype.TV_CMD_NUMBER_0 = 2;

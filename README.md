@@ -61,7 +61,21 @@ tvApi.authenticate(function (err, sessionKey) {
 ## How to execute a special command
 
 ```js
-TO BE DONE
+var tvApi = new TvApi('192.168.0.5', '8080', '879540');
+tvApi.authenticate(function (err, sessionKey) {
+        if (err) {
+            console.error(err);
+        } else {
+            tvApi.queryData(tvApi.TV_INFO_CHANNEL_LIST, function (err, data) {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.log(data);
+                }
+            })
+        }
+    }
+);
 ```
 
 ## How to change your channel
@@ -94,18 +108,17 @@ tvApi.authenticate(function (err, sessionKey) {
 # How to save a screenshot
 
 ```js
-var TvApi = require('./api.js');
-var tvApi = new TvApi('192.168.0.5', '8080', '879540'); //for key request
+var tvApi = new TvApi('192.168.0.5', '8080', '879540');
 tvApi.authenticate(function (err, sessionKey) {
         if (err) {
             console.error(err);
         } else {
-            tvApi.queryData(tvApi.TV_INFO_SCREEN, function (err, data) {
-                if (err) {
-                    console.error(err);
-                } else {
-                    console.log(data);
-                }
+            tvApi.takeScreenShot('screen.jpg', function (err, data) {
+                                    if (err) {
+                                        console.error(err);
+                                    } else {
+                                        console.log('ok');
+                                    }
             });
         }
     }
