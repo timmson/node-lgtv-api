@@ -14,7 +14,11 @@ function LgTvApi(_host, _port, _pairingKey) {
     this.port = _port;
     this.pairingKey = _pairingKey;
     this.session = null;
+    this.debugMode = false;
 }
+LgTvApi.prototype.setDebugMode = function (_debugMode) {
+    this.debugMode = _debugMode;
+};
 
 LgTvApi.prototype.displayPairingKey = function (functionCallback) {
     this.sendXMLRequest('/roap/api/auth', {auth: {type: 'AuthKeyReq'}}, (function (err, response, data) {
@@ -58,7 +62,6 @@ LgTvApi.prototype.processCommand = function (commandName, parameters, functionCa
         functionCallback(new Error("No session id"));
     }
 
-    //var commandName = '';
     if (!isNaN(parseInt(commandName)) && parameters.length == 0) {
         parameters.value = commandName;
         commandName = 'HandleKeyInput';
@@ -122,8 +125,10 @@ LgTvApi.prototype.queryData = function (targetId, functionCallback) {
 };
 
 LgTvApi.prototype.takeScreenShot = function (fileName, functionCallback) {
-    var path = '/roap/api/data?target=' + this.TV_INFO_SCREEN
-    console.info('REQ path:' + path);
+    var path = '/roap/api/data?target=' + this.TV_INFO_SCREEN;
+    if (this.debugMode) {
+        console.info('REQ path:' + path);
+    }
     var uri = 'http://' + this.host + ':' + this.port + path;
     var options = {
         headers: {
@@ -136,7 +141,9 @@ LgTvApi.prototype.takeScreenShot = function (fileName, functionCallback) {
 
 LgTvApi.prototype.sendXMLRequest = function (path, params, callback) {
     var reqBody = xmlBuilder.buildObject(params);
-    console.info('REQ:' + reqBody);
+    if (this.debugMode) {
+        console.info('REQ:' + reqBody);
+    }
     var uri = 'http://' + this.host + ':' + this.port + path;
     var options = {
         headers: {
@@ -145,14 +152,18 @@ LgTvApi.prototype.sendXMLRequest = function (path, params, callback) {
         },
         body: reqBody
     };
-    request.post(uri, options, function (err, response, data) {
-        console.info('RESP:' + data);
+    request.post(uri, options, (function (err, response, data) {
+        if (this.debugMode) {
+            console.info('RESP:' + data);
+        }
         callback(null, err, response, data);
-    });
+    }).bind(this));
 };
 
 LgTvApi.prototype.sendRequest = function (path, callback) {
-    console.info('REQ path:' + path);
+    if (this.debugMode) {
+        console.info('REQ path:' + path);
+    }
     var uri = 'http://' + this.host + ':' + this.port + path;
     var options = {
         headers: {
@@ -160,10 +171,12 @@ LgTvApi.prototype.sendRequest = function (path, callback) {
             'Connection': 'Keep-Alive'
         }
     };
-    request.get(uri, options, function (err, response, data) {
-        console.info('RESP:' + data);
+    request.get(uri, options, (function (err, response, data) {
+        if (this.debugMode) {
+            console.info('RESP:' + data);
+        }
         callback(null, err, response, data);
-    });
+    }).bind(this));
 };
 
 LgTvApi.prototype.TV_CMD_POWER = 1;

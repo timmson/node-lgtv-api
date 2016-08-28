@@ -1,5 +1,5 @@
-Node LG TV API [under development]
-==================================
+Node LG TV API [beta]
+=====================
 
 A NODE API for the LG SmartTV (2012+) which makes it easy for you to remote control your TV with code.
 You're able to execute simple/special commands and queries (change channel, get current channel,
@@ -9,6 +9,8 @@ You can find command parameters and query structures on the [Official Documentat
 (There is also a command/query list below the examples)
 
 This project inspired by [PHP-LG-SmartTV by SteveWinfield](https://github.com/SteveWinfield/PHP-LG-SmartTV)
+
+If you have any questions, send it via email: [timmson666@mail.ru](mailto:timmson666@mail.ru?subjet=node-lgtv-api)
 
 ## How to install
 ```sh
@@ -46,7 +48,7 @@ tvApi.authenticate(function (err, sessionKey) {
         if (err) {
             console.error(err);
         } else {
-            tvApi.processCommand(tvApi.TV_CMD_MUTE_TOGGLE, function (err, data) {
+            tvApi.processCommand(tvApi.TV_CMD_MUTE_TOGGLE, [], function (err, data) {
                 if (err) {
                     console.error(err);
                 } else {
@@ -123,6 +125,13 @@ tvApi.authenticate(function (err, sessionKey) {
         }
     }
 );
+```
+
+## How to enable **Debug Mode** (default is off)
+
+```js
+var tvApi = new TvApi('192.168.0.5', '8080', '879540');
+tvApi.setDebugMode(true);
 ```
 
 ## List of commands and queries (+ Documentation links)
