@@ -1,6 +1,6 @@
 {
   "name": "node-lgtv-api",
-  "version": "0.8.0-beta",
+  "version": "0.8.1-beta",
   "description": "A NODE API for the LG SmartTV (2012+) which makes it easy for you to remote control your TV with code",
   "main": "api.js",
   "scripts": {
@@ -16,7 +16,7 @@
     "smartv"
   ],
   "author": "timmson",
-  "license": "GPL",
+  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/timmson/node-lgtv-api/issues"
   },
