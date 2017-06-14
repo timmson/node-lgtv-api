@@ -1,11 +1,11 @@
-var request = require('request');
-var fs = require('fs');
-var xml2js = require('xml2js');
-var async = require('async');
+const request = require('request');
+const fs = require('fs');
+const xml2js = require('xml2js');
+const async = require('async');
 
 
-var xmlBuilder = new xml2js.Builder();
-var xmlParser = new xml2js.Parser();
+const xmlBuilder = new xml2js.Builder();
+const xmlParser = new xml2js.Parser();
 
 module.exports = LgTvApi;
 
@@ -40,8 +40,7 @@ LgTvApi.prototype.authenticate = function (functionCallback) {
             }).bind(this),
             (function (err, response, data, callback) {
                 if (err || response.statusCode != 200) {
-                    var ownErr = err != null ? err : new Error('Response code:' + response.statusCode);
-                    callback(ownErr, data);
+                    callback(err  ? err : new Error('Response code:' + response.statusCode), data);
                 } else {
                     xmlParser.parseString(data, callback);
                 }
@@ -77,13 +76,9 @@ LgTvApi.prototype.processCommand = function (commandName, parameters, functionCa
         (function (callback) {
             this.sendXMLRequest('/roap/api/command', {command: parameters}, callback);
         }).bind(this),
-        (function () {
-
-        }).bind(this),
         (function (err, response, data, callback) {
             if (err || response.statusCode != 200) {
-                var ownErr = err != null ? err : new Error('Response code:' + response.statusCode);
-                callback(ownErr, data);
+                callback(err  ? err : new Error('Response code:' + response.statusCode), data);
             } else {
                 xmlParser.parseString(data, callback);
             }
@@ -125,12 +120,12 @@ LgTvApi.prototype.queryData = function (targetId, functionCallback) {
 };
 
 LgTvApi.prototype.takeScreenShot = function (fileName, functionCallback) {
-    var path = '/roap/api/data?target=' + this.TV_INFO_SCREEN;
+    let path = '/roap/api/data?target=' + this.TV_INFO_SCREEN;
     if (this.debugMode) {
         console.info('REQ path:' + path);
     }
-    var uri = 'http://' + this.host + ':' + this.port + path;
-    var options = {
+    let uri = 'http://' + this.host + ':' + this.port + path;
+    let options = {
         headers: {
             'Content-Type': 'application/atom+xml',
             'Connection': 'Keep-Alive'
@@ -140,12 +135,12 @@ LgTvApi.prototype.takeScreenShot = function (fileName, functionCallback) {
 };
 
 LgTvApi.prototype.sendXMLRequest = function (path, params, callback) {
-    var reqBody = xmlBuilder.buildObject(params);
+    let reqBody = xmlBuilder.buildObject(params);
     if (this.debugMode) {
         console.info('REQ:' + reqBody);
     }
-    var uri = 'http://' + this.host + ':' + this.port + path;
-    var options = {
+    let uri = 'http://' + this.host + ':' + this.port + path;
+    let options = {
         headers: {
             'Content-Type': 'application/atom+xml',
             'Connection': 'Keep-Alive'
@@ -164,8 +159,8 @@ LgTvApi.prototype.sendRequest = function (path, callback) {
     if (this.debugMode) {
         console.info('REQ path:' + path);
     }
-    var uri = 'http://' + this.host + ':' + this.port + path;
-    var options = {
+    let uri = 'http://' + this.host + ':' + this.port + path;
+    let options = {
         headers: {
             'Content-Type': 'application/atom+xml',
             'Connection': 'Keep-Alive'
