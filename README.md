@@ -8,7 +8,7 @@ get channel list, set volume up, set volume down, save screenshot - save gif ani
 You can find command parameters and query structures on the [Official Documentation of the LG SmartTV](http://developer.lgappstv.com/TV_HELP/index.jsp?topic=%2Flge.tvsdk.references.book%2Fhtml%2FUDAP%2FUDAP%2FHandleTouchMove.htm)
 (There is also a command/query list below the examples)
 
-This project inspired by [PHP-LG-SmartTV by SteveWinfield](https://github.com/SteveWinfield/PHP-LG-SmartTV)
+This project was inspired by [PHP-LG-SmartTV by SteveWinfield](https://github.com/SteveWinfield/PHP-LG-SmartTV)
 
 If you have any questions, send it via email: [timmson666@mail.ru](mailto:timmson666@mail.ru?subjet=node-lgtv-api)
 
