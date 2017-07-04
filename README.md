@@ -20,7 +20,7 @@ npm install node-lgtv-api
 ## How to request pairing key
 
 ```js
-var TvApi = require('./api.js');
+var TvApi = require('node-lgtv-api');
 var tvApi = new TvApi('192.168.0.5', '8080'); //for key request
 tvApi.displayPairingKey(function (err) {
     if (err) {
@@ -32,7 +32,7 @@ tvApi.displayPairingKey(function (err) {
 ## How to authorize to your TV
 
 ```js
-var TvApi = require('./api.js');
+var TvApi = require('node-lgtv-api');
 var tvApi = new TvApi('192.168.0.5', '8080', '879540'); //for key request
 tvApi.authenticate(function (err, sessionKey) {
     console.log(sessionKey);
@@ -42,7 +42,7 @@ tvApi.authenticate(function (err, sessionKey) {
 ## How to execute a simple command
 
 ```js
-var TvApi = require('./api.js');
+var TvApi = require('node-lgtv-api');
 var tvApi = new TvApi('192.168.0.5', '8080', '879540'); //for key request
 tvApi.authenticate(function (err, sessionKey) {
         if (err) {
@@ -80,16 +80,10 @@ tvApi.authenticate(function (err, sessionKey) {
 );
 ```
 
-## How to change your channel
-
-```js
-TO BE DONE
-```
-
 ## How to query data
 
 ```js
-var TvApi = require('./api.js');
+var TvApi = require('node-lgtv-api');
 var tvApi = new TvApi('192.168.0.5', '8080', '879540'); //for key request
 tvApi.authenticate(function (err, sessionKey) {
         if (err) {
@@ -110,6 +104,7 @@ tvApi.authenticate(function (err, sessionKey) {
 ## How to save a screenshot
 
 ```js
+var TvApi = require('node-lgtv-api');
 var tvApi = new TvApi('192.168.0.5', '8080', '879540');
 tvApi.authenticate(function (err, sessionKey) {
         if (err) {
