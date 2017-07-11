@@ -42,8 +42,6 @@ tvApi.authenticate(function (err, sessionKey) {
 ## How to execute a simple command
 
 ```js
-var TvApi = require('node-lgtv-api');
-var tvApi = new TvApi('192.168.0.5', '8080', '879540'); //for key request
 tvApi.authenticate(function (err, sessionKey) {
         if (err) {
             console.error(err);
@@ -63,7 +61,6 @@ tvApi.authenticate(function (err, sessionKey) {
 ## How to execute a special command
 
 ```js
-var tvApi = new TvApi('192.168.0.5', '8080', '879540');
 tvApi.authenticate(function (err, sessionKey) {
         if (err) {
             console.error(err);
@@ -80,16 +77,33 @@ tvApi.authenticate(function (err, sessionKey) {
 );
 ```
 
-## How to query data
+## How to query data (current volume)
 
 ```js
-var TvApi = require('node-lgtv-api');
-var tvApi = new TvApi('192.168.0.5', '8080', '879540'); //for key request
 tvApi.authenticate(function (err, sessionKey) {
         if (err) {
             console.error(err);
         } else {
-            tvApi.processCommand(tvApi.TV_INFO_VOLUME, function (err, data) {
+            tvApi.queryData(tvApi.TV_INFO_VOLUME, function (err, data) {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.log(data);
+                }
+            });
+        }
+    }
+);
+```
+
+## How to query data (channel list)
+
+```js
+tvApi.authenticate(function (err, sessionKey) {
+        if (err) {
+            console.error(err);
+        } else {
+            tvApi.queryData(tvApi.TV_INFO_CHANNEL_LIST, function (err, data) {
                 if (err) {
                     console.error(err);
                 } else {
@@ -104,8 +118,6 @@ tvApi.authenticate(function (err, sessionKey) {
 ## How to save a screenshot
 
 ```js
-var TvApi = require('node-lgtv-api');
-var tvApi = new TvApi('192.168.0.5', '8080', '879540');
 tvApi.authenticate(function (err, sessionKey) {
         if (err) {
             console.error(err);
@@ -125,7 +137,6 @@ tvApi.authenticate(function (err, sessionKey) {
 ## How to enable **Debug Mode** (default is off)
 
 ```js
-var tvApi = new TvApi('192.168.0.5', '8080', '879540');
 tvApi.setDebugMode(true);
 ```
 
