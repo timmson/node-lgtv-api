@@ -122,13 +122,14 @@ tvApi.authenticate(function (err, sessionKey) {
         if (err) {
             console.error(err);
         } else {
-            tvApi.takeScreenShot('screen.jpg', function (err, data) {
+            tvApi.takeScreenShot((err, stream) => {
                 if (err) {
                     console.error(err);
                 } else {
                     console.log('ok');
+                    stream.pipe(require('fs').createWriteStream('scree.jpg'));
                 }
-            });
+            })
         }
     }
 );

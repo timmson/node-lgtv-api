@@ -1,5 +1,4 @@
 const request = require('request');
-const fs = require('fs');
 const xml2js = require('xml2js');
 const async = require('async');
 
@@ -119,7 +118,7 @@ LgTvApi.prototype.queryData = function (targetId, functionCallback) {
 
 };
 
-LgTvApi.prototype.takeScreenShot = function (fileName, functionCallback) {
+LgTvApi.prototype.takeScreenShot = function (functionCallback) {
     let path = '/roap/api/data?target=' + this.TV_INFO_SCREEN;
     if (this.debugMode) {
         console.info('REQ path:' + path);
@@ -131,7 +130,7 @@ LgTvApi.prototype.takeScreenShot = function (fileName, functionCallback) {
             'Connection': 'Keep-Alive'
         }
     };
-    request.get(uri, options).pipe(fs.createWriteStream(fileName)).on('close', functionCallback);
+    functionCallback(null, request.get(uri, options));
 };
 
 LgTvApi.prototype.sendXMLRequest = function (path, params, callback) {
