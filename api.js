@@ -63,10 +63,10 @@ LgTvApi.prototype.processCommand = function (commandName, parameters, functionCa
     if (!isNaN(parseInt(commandName)) && parameters.length == 0) {
         parameters.value = commandName;
         commandName = 'HandleKeyInput';
-    } else if (isNaN(parseInt(parameters)) && isNaN(parseInt(parameters))) {
+    } else if (isNaN(parseInt(parameters)) && !(((typeof parameters === "object") && (parameters !== null)))) {
         parameters.value = parameters;
     } else {
-
+        console.log('yes');
     }
 
     parameters.name = commandName;
@@ -146,6 +146,7 @@ LgTvApi.prototype.sendXMLRequest = function (path, params, callback) {
         },
         body: reqBody
     };
+    console.log(reqBody);
     request.post(uri, options, (function (err, response, data) {
         if (this.debugMode) {
             console.info('RESP:' + data);

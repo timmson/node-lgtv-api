@@ -98,6 +98,8 @@ tvApi.authenticate(function (err, sessionKey) {
 
 ## How to query data (channel list)
 
+data[5] - where 5 is the number of channel in the list.
+
 ```js
 tvApi.authenticate(function (err, sessionKey) {
         if (err) {
@@ -107,7 +109,13 @@ tvApi.authenticate(function (err, sessionKey) {
                 if (err) {
                     console.error(err);
                 } else {
-                    console.log(data);
+                    tvApi.processCommand(tvApi.TV_CMD_CHANGE_CHANNEL, data[5], function (err, data) {
+                        if (err) {
+                            console.error(err);
+                        } else {
+                            console.log(data);
+                        }
+                    });
                 }
             });
         }
