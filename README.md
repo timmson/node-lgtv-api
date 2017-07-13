@@ -22,11 +22,7 @@ npm install node-lgtv-api
 ```js
 var TvApi = require('node-lgtv-api');
 var tvApi = new TvApi('192.168.0.5', '8080'); //for key request
-tvApi.displayPairingKey(function (err) {
-    if (err) {
-        console.log(err);
-    }
-});
+tvApi.displayPairingKey().then(console.log, console.error);
 ```
 
 ## How to authorize to your TV
@@ -34,113 +30,35 @@ tvApi.displayPairingKey(function (err) {
 ```js
 var TvApi = require('node-lgtv-api');
 var tvApi = new TvApi('192.168.0.5', '8080', '879540'); //for key request
-tvApi.authenticate(function (err, sessionKey) {
-    console.log(sessionKey);
-});
+tvApi.authenticate().then(console.log, console.error);
 ```
 
 ## How to execute a simple command
 
 ```js
-tvApi.authenticate(function (err, sessionKey) {
-        if (err) {
-            console.error(err);
-        } else {
-            tvApi.processCommand(tvApi.TV_CMD_MUTE_TOGGLE, [], function (err, data) {
-                if (err) {
-                    console.error(err);
-                } else {
-                    console.log(data);
-                }
-            });
-        }
-    }
-);
-```
-
-## How to execute a special command
-
-```js
-tvApi.authenticate(function (err, sessionKey) {
-        if (err) {
-            console.error(err);
-        } else {
-            tvApi.queryData(tvApi.TV_INFO_CHANNEL_LIST, function (err, data) {
-                if (err) {
-                    console.error(err);
-                } else {
-                    console.log(data);
-                }
-            })
-        }
-    }
-);
-```
-
-## How to query data (current volume)
-
-```js
-tvApi.authenticate(function (err, sessionKey) {
-        if (err) {
-            console.error(err);
-        } else {
-            tvApi.queryData(tvApi.TV_INFO_VOLUME, function (err, data) {
-                if (err) {
-                    console.error(err);
-                } else {
-                    console.log(data);
-                }
-            });
-        }
-    }
-);
+tvApi.authenticate().then(() => tvApi.processCommand(tvApi.TV_CMD_MUTE_TOGGLE, []).then(console.log, console.error), console.error);
 ```
 
 ## How to query data (channel list)
 
+```js
+tvApi.authenticate().then(() =>  tvApi.queryData(tvApi.TV_INFO_CHANNEL_LIST).then(console.log, console.error), console.error);
+```
+
+## How switch to certain channel
+
 data[5] - where 5 is the number of channel in the list.
 
 ```js
-tvApi.authenticate(function (err, sessionKey) {
-        if (err) {
-            console.error(err);
-        } else {
-            tvApi.queryData(tvApi.TV_INFO_CHANNEL_LIST, function (err, data) {
-                if (err) {
-                    console.error(err);
-                } else {
-                    tvApi.processCommand(tvApi.TV_CMD_CHANGE_CHANNEL, data[5], function (err, data) {
-                        if (err) {
-                            console.error(err);
-                        } else {
-                            console.log(data);
-                        }
-                    });
-                }
-            });
-        }
-    }
-);
+tvApi.authenticate().then(() =>  tvApi.queryData(tvApi.TV_INFO_CHANNEL_LIST).then(
+    data => tvApi.processCommand(tvApi.TV_CMD_CHANGE_CHANNEL, data[5]).then(ret => {}, console.error), console.error),
+    console.error);
 ```
 
 ## How to save a screenshot
 
 ```js
-tvApi.authenticate(function (err, sessionKey) {
-        if (err) {
-            console.error(err);
-        } else {
-            tvApi.takeScreenShot((err, stream) => {
-                if (err) {
-                    console.error(err);
-                } else {
-                    console.log('ok');
-                    stream.pipe(require('fs').createWriteStream('scree.jpg'));
-                }
-            })
-        }
-    }
-);
+tvApi.authenticate().then(() => tvApi.takeScreenShot().then(stream => stream.pipe(require('fs').createWriteStream('screen.jpg'))), console.error);
 ```
 
 ## How to launch an app
@@ -148,25 +66,12 @@ tvApi.authenticate(function (err, sessionKey) {
 ```js
 let requestedApp = [
     {
-        appname: 'Netflix'
+        appname: 'Netflix',
         auid: '00000000000112ae'
     }
 ];
 
-tvApi.authenticate(function (err, sessionKey) {
-        if (err) {
-            console.error(err);
-        } else {
-            tvApi.processCommand(tvApi.TV_LAUNCH_APP, requestedApp, function (err, data) {
-                if (err) {
-                    console.error(err);
-                } else {
-                    console.log(data);
-                }
-            });
-        }
-    }
-);
+tvApi.authenticate().then(() => tvApi.processCommand(tvApi.TV_LAUNCH_APP, requestedApp).then(ret => {}, console.error), console.error);
 ```
 
 ## How to terminate an app
@@ -174,25 +79,12 @@ tvApi.authenticate(function (err, sessionKey) {
 ```js
 let requestedApp = [
     {
-        appname: 'Netflix'
+        appname: 'Netflix',
         auid: '00000000000112ae'
     }
 ];
 
-tvApi.authenticate(function (err, sessionKey) {
-        if (err) {
-            console.error(err);
-        } else {
-            tvApi.processCommand(tvApi.TV_TERMINATE_APP, requestedApp, function (err, data) {
-                if (err) {
-                    console.error(err);
-                } else {
-                    console.log(data);
-                }
-            });
-        }
-    }
-);
+tvApi.authenticate().then(() => tvApi.processCommand(tvApi.TV_TERMINATE_APP, requestedApp).then(ret => {}, console.error), console.error);
 ```
 
 ## How to enable **Debug Mode** (default is off)
