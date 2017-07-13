@@ -143,6 +143,58 @@ tvApi.authenticate(function (err, sessionKey) {
 );
 ```
 
+## How to launch an app
+
+```js
+let requestedApp = [
+    {
+        appname: 'Netflix'
+        auid: '00000000000112ae'
+    }
+];
+
+tvApi.authenticate(function (err, sessionKey) {
+        if (err) {
+            console.error(err);
+        } else {
+            tvApi.processCommand(tvApi.TV_LAUNCH_APP, requestedApp, function (err, data) {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.log(data);
+                }
+            });
+        }
+    }
+);
+```
+
+## How to terminate an app
+
+```js
+let requestedApp = [
+    {
+        appname: 'Netflix'
+        auid: '00000000000112ae'
+    }
+];
+
+tvApi.authenticate(function (err, sessionKey) {
+        if (err) {
+            console.error(err);
+        } else {
+            tvApi.processCommand(tvApi.TV_TERMINATE_APP, requestedApp, function (err, data) {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.log(data);
+                }
+            });
+        }
+    }
+);
+```
+
 ## How to enable **Debug Mode** (default is off)
 
 ```js
