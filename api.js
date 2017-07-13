@@ -251,5 +251,6 @@ LgTvApi.prototype.TV_INFO_VOLUME = 'volume_info';
 LgTvApi.prototype.TV_INFO_SCREEN = 'screen_image';
 LgTvApi.prototype.TV_INFO_3D = 'is_3d';
 LgTvApi.prototype.TV_LAUNCH_APP = 'AppExecute';
+LgTvApi.prototype.TV_TERMINATE_APP = 'AppTerminate';
 
 
