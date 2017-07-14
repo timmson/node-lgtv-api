@@ -4,7 +4,9 @@ const xml2js = require('xml2js');
 const xmlBuilder = new xml2js.Builder();
 const xmlParser = new xml2js.Parser();
 
-module.exports = LgTvApi;
+function getErrorMessage(error, response) {
+    return error || new Error('Response code:' + response.statusCode);
+}
 
 function LgTvApi(_host, _port, _pairingKey) {
     this.host = _host;
@@ -13,6 +15,7 @@ function LgTvApi(_host, _port, _pairingKey) {
     this.session = null;
     this.debugMode = false;
 }
+
 LgTvApi.prototype.setDebugMode = function (_debugMode) {
     this.debugMode = _debugMode;
 };
@@ -115,10 +118,6 @@ LgTvApi.prototype.sendRequest = function (path) {
     });
 };
 
-function getErrorMessage(error, response) {
-    return error || new Error('Response code:' + response.statusCode);
-}
-
 LgTvApi.prototype.TV_CMD_POWER = 1;
 LgTvApi.prototype.TV_CMD_NUMBER_0 = 2;
 LgTvApi.prototype.TV_CMD_NUMBER_1 = 3;
@@ -198,4 +197,4 @@ LgTvApi.prototype.TV_INFO_3D = 'is_3d';
 LgTvApi.prototype.TV_LAUNCH_APP = 'AppExecute';
 LgTvApi.prototype.TV_TERMINATE_APP = 'AppTerminate';
 
-
+module.exports = LgTvApi;
