@@ -1,6 +1,6 @@
-let TvApi = require('./api.js');
+let TvApi = require("./api.js");
 
-let tvApi = new TvApi('192.168.0.5', '8080', '879540');
+let tvApi = new TvApi("192.168.0.5", "8080", "879540");
 
 tvApi.authenticate().then(() => tvApi.processCommand(tvApi.TV_CMD_MUTE_TOGGLE, []).then(console.log, console.error), console.error);
 
