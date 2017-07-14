@@ -12,6 +12,8 @@ This project was inspired by [PHP-LG-SmartTV by SteveWinfield](https://github.co
 
 If you have any questions, send it via email: [timmson666@mail.ru](mailto:timmson666@mail.ru?subjet=node-lgtv-api)
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/10a254b1441d4fdc9a0d1f1272eb051e)](https://www.codacy.com/app/timmson666/node-lgtv-api?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=timmson/node-lgtv-api&amp;utm_campaign=Badge_Grade)
+
 ## How to install
 ```sh
 npm install node-lgtv-api
