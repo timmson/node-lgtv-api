@@ -41,22 +41,19 @@ LgTvApi.prototype.authenticate = function () {
 LgTvApi.prototype.processCommand = function (commandName, parameters) {
     return new Promise((resolve, reject) => {
         (this.session === null) ? reject(new Error("No session id. You nead call authenticate at first.")) : 0;
-
+        let command = {};
         if (!isNaN(parseInt(commandName)) && parameters.length === 0) {
-            parameters.value = commandName;
-            commandName = "HandleKeyInput";
+            command.value = commandName;
+            command.name = "HandleKeyInput";
         } else if (isNaN(parseInt(parameters)) && !(((typeof parameters === "object") && (parameters !== null)))) {
-            parameters.value = parameters;
+            command.value = parameters;
+            command.name = commandName;
         }
-
-        parameters.name = commandName;
-
-        this.sendXMLRequest("/roap/api/command", {command: parameters}).then(
+        this.sendXMLRequest("/roap/api/command", {command: command}).then(
             data => {
                 xmlParser.parseString(data, (err, doc) => err ? reject(err) : resolve());
             }, reject);
     });
-
 };
 
 LgTvApi.prototype.queryData = function (targetId) {
