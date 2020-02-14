@@ -86,6 +86,7 @@ LgTvApi.prototype.takeScreenShot = function () {
 LgTvApi.prototype.sendXMLRequest = function (path, params) {
     return new Promise((resolve, reject) => {
         let uri = "http://" + this.host + ":" + this.port + path;
+        if(params.command) params.command = { value: params.command.value, name: params.command.name };
         let options = {
             headers: {
                 "Content-Type": "application/atom+xml",
