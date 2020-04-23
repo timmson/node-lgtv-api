@@ -2,7 +2,7 @@
 .idea/
 
 # Examples
-php_examples/
+php_example/
 
 # Node modules
 node_modules/
@@ -16,4 +16,4 @@ test/
 _config.yml
 
 # Other
-.eslintrc
+.eslintrc.js
