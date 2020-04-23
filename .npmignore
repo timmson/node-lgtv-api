@@ -1,10 +1,19 @@
 # Idea
 .idea/
 
-#Node modules
-node_modules/
+# Examples
+php_examples/
 
-#Git
+# Node modules
+node_modules/
+test/
+
+
+# Git
 .git
 .gitignore
+.github/
 _config.yml
+
+# Other
+.eslintrc
