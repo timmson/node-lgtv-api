@@ -22,7 +22,6 @@ jobs:
         npm i
     - name: Lint and Test
       run: |
-        cd ./src
         npm run lint
         npm run test
       env:
