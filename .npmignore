@@ -1,0 +1,10 @@
+# Idea
+.idea/
+
+#Node modules
+node_modules/
+
+#Git
+.git
+.gitignore
+_config.yml

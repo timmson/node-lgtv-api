@@ -5,117 +5,119 @@ const xmlBuilder = new xml2js.Builder();
 const xmlParser = new xml2js.Parser();
 
 function getErrorMessage(error, response) {
-    return error || new Error("Response code:" + response.statusCode);
+	return error || new Error("Response code:" + response.statusCode);
+}
+
+function getOptions(body) {
+	let options = {
+		headers: {
+			"Content-Type": "application/atom+xml",
+			"Connection": "Keep-Alive"
+		}
+	};
+
+	if (body) {
+		options.body = body;
+	}
+
+	return body;
 }
 
 function LgTvApi(_host, _port, _pairingKey) {
-    this.host = _host;
-    this.port = _port;
-    this.pairingKey = _pairingKey;
-    this.session = null;
-    this.debugMode = false;
+	this.host = _host;
+	this.port = _port;
+	this.pairingKey = _pairingKey;
+	this.session = null;
+	this.debugMode = false;
 }
 
 LgTvApi.prototype.setDebugMode = function (_debugMode) {
-    this.debugMode = _debugMode;
+	this.debugMode = _debugMode;
 };
 
 LgTvApi.prototype.displayPairingKey = function () {
-    return new Promise((resolve, reject) => {
-        this.sendXMLRequest("/roap/api/auth", {auth: {type: "AuthKeyReq"}}).then(resolve, reject);
-    });
+	return new Promise((resolve, reject) => {
+		this.sendXMLRequest("/roap/api/auth", {auth: {type: "AuthKeyReq"}}).then(resolve, reject);
+	});
 };
 
 LgTvApi.prototype.authenticate = function () {
-    return new Promise((resolve, reject) => {
-        (this.pairingKey === null) ? reject(new Error("No pairing key. You need call displayPairingKey at first.")) : 0;
-        this.sendXMLRequest("/roap/api/auth", {auth: {type: "AuthReq", value: this.pairingKey}}).then(
-            data => {
-                xmlParser.parseString(data, (err, doc) => {
-                    err ? reject(err) : this.session = doc.envelope.session[0] & resolve(doc.envelope.session[0]);
-                });
-            }, reject);
-    });
+	return new Promise((resolve, reject) => {
+		(this.pairingKey === null) ? reject(new Error("No pairing key. You need call displayPairingKey at first.")) : 0;
+		this.sendXMLRequest("/roap/api/auth", {auth: {type: "AuthReq", value: this.pairingKey}}).then(
+			data => {
+				xmlParser.parseString(data, (err, doc) => {
+					err ? reject(err) : this.session = doc.envelope.session[0] & resolve(doc.envelope.session[0]);
+				});
+			}, reject);
+	});
 };
 
 LgTvApi.prototype.processCommand = function (commandName, parameters) {
-    return new Promise((resolve, reject) => {
-        (this.session === null) ? reject(new Error("No session id. You nead call authenticate at first.")) : 0;
+	return new Promise((resolve, reject) => {
+		(this.session === null) ? reject(new Error("No session id. You nead call authenticate at first.")) : 0;
 
-        if (!isNaN(parseInt(commandName)) && parameters.length === 0) {
-            parameters.value = commandName;
-            commandName = "HandleKeyInput";
-        } else if (isNaN(parseInt(parameters)) && !(((typeof parameters === "object") && (parameters !== null)))) {
-            parameters.value = parameters;
-        }
+		if (!isNaN(parseInt(commandName)) && parameters.length === 0) {
+			parameters.value = commandName;
+			commandName = "HandleKeyInput";
+		} else if (isNaN(parseInt(parameters)) && !(((typeof parameters === "object") && (parameters !== null)))) {
+			parameters.value = parameters;
+		}
 
-        parameters.name = commandName;
+		parameters.name = commandName;
 
-        this.sendXMLRequest("/roap/api/command", {command: parameters}).then(
-            data => {
-                xmlParser.parseString(data, (err, doc) => err ? reject(err) : resolve());
-            }, reject);
-    });
+		this.sendXMLRequest("/roap/api/command", {command: parameters}).then(
+			data => {
+				xmlParser.parseString(data, (err, doc) => err ? reject(err) : resolve(doc));
+			}, reject);
+	});
 
 };
 
 LgTvApi.prototype.queryData = function (targetId) {
-    return new Promise((resolve, reject) => {
-        (this.session === null) ? reject(new Error("No session id. You nead call authenticate at first.")) : 0;
-        this.sendRequest("/roap/api/data?target=" + targetId).then(
-            data => {
-                xmlParser.parseString(data, (err, doc) => err ? reject(err) : resolve(doc.envelope.data));
-            }, reject);
-    });
+	return new Promise((resolve, reject) => {
+		(this.session === null) ? reject(new Error("No session id. You nead call authenticate at first.")) : 0;
+		this.sendRequest("/roap/api/data?target=" + targetId).then(
+			data => {
+				xmlParser.parseString(data, (err, doc) => err ? reject(err) : resolve(doc.envelope.data));
+			}, reject);
+	});
 };
 
 LgTvApi.prototype.takeScreenShot = function () {
-    return new Promise((resolve, reject) => {
-        let uri = "http://" + this.host + ":" + this.port + "/roap/api/data?target=" + this.TV_INFO_SCREEN;
-        let options = {
-            headers: {
-                "Content-Type": "application/atom+xml",
-                "Connection": "Keep-Alive"
-            }
-        };
-        this.debugMode ? console.info("REQ:" + JSON.stringify(options)) : 0;
-        resolve(request.get(uri, options));
-    })
+	return new Promise((resolve, reject) => {
+		let uri = "http://" + this.host + ":" + this.port + "/roap/api/data?target=" + this.TV_INFO_SCREEN;
+		let options = getOptions();
+		this.debugMode ? console.info("REQ:" + JSON.stringify(options)) : 0;
+		request.get(uri, options, (err, response, data) => {
+			this.debugMode ? console.info("RESP:" + data) : 0;
+			(err || response.statusCode !== 200) ? reject(getErrorMessage(err, response)) : resolve(data);
+		});
+	});
 };
 
 LgTvApi.prototype.sendXMLRequest = function (path, params) {
-    return new Promise((resolve, reject) => {
-        let uri = "http://" + this.host + ":" + this.port + path;
-        let options = {
-            headers: {
-                "Content-Type": "application/atom+xml",
-                "Connection": "Keep-Alive"
-            },
-            body: xmlBuilder.buildObject(params)
-        };
-        this.debugMode ? console.info("REQ:" + options.body) : 0;
-        request.post(uri, options, (err, response, data) => {
-            this.debugMode ? console.info("RESP:" + data) : 0;
-            (err || response.statusCode !== 200) ? reject(getErrorMessage(err, response)) : resolve(data);
-        });
-    });
+	return new Promise((resolve, reject) => {
+		let uri = "http://" + this.host + ":" + this.port + path;
+		let options = getOptions(xmlBuilder.buildObject(params));
+		this.debugMode ? console.info("REQ:" + options.body) : 0;
+		request.post(uri, options, (err, response, data) => {
+			this.debugMode ? console.info("RESP:" + data) : 0;
+			(err || response.statusCode !== 200) ? reject(getErrorMessage(err, response)) : resolve(data);
+		});
+	});
 };
 
 LgTvApi.prototype.sendRequest = function (path) {
-    return new Promise((resolve, reject) => {
-        let uri = "http://" + this.host + ":" + this.port + path;
-        let options = {
-            headers: {
-                "Content-Type": "application/atom+xml",
-                "Connection": "Keep-Alive"
-            }
-        };
-        this.debugMode ? console.info("REQ:" + JSON.stringify(options)) : 0;
-        request.get(uri, options, (err, response, data) => {
-            this.debugMode ? console.info("RESP:" + data) : 0;
-            (err || response.statusCode !== 200) ? reject(getErrorMessage(err, response)) : resolve(data);
-        });
-    });
+	return new Promise((resolve, reject) => {
+		let uri = "http://" + this.host + ":" + this.port + path;
+		let options = getOptions();
+		this.debugMode ? console.info("REQ:" + JSON.stringify(options)) : 0;
+		request.get(uri, getOptions(), (err, response, data) => {
+			this.debugMode ? console.info("RESP:" + data) : 0;
+			(err || response.statusCode !== 200) ? reject(getErrorMessage(err, response)) : resolve(data);
+		});
+	});
 };
 
 LgTvApi.prototype.TV_CMD_POWER = 1;

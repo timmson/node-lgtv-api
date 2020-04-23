@@ -2,7 +2,7 @@ Node LG TV API [beta]
 =====================
 
 A NODE API for the LG SmartTV (2012+) which makes it easy for you to remote control your TV with code.
-You're able to execute simple/special commands and queries (change channel, get current channel,
+You"re able to execute simple/special commands and queries (change channel, get current channel,
 get channel list, set volume up, set volume down, save screenshot - save gif animation, ...)
 
 You can find command parameters and query structures on the [Official Documentation of the LG SmartTV](http://developer.lgappstv.com/TV_HELP/index.jsp?topic=%2Flge.tvsdk.references.book%2Fhtml%2FUDAP%2FUDAP%2FHandleTouchMove.htm)
@@ -22,16 +22,16 @@ npm install node-lgtv-api
 ## How to request pairing key
 
 ```js
-var TvApi = require('node-lgtv-api');
-var tvApi = new TvApi('192.168.0.5', '8080'); //for key request
+const TvApi = require("node-lgtv-api");
+const tvApi = new TvApi("192.168.0.5", "8080"); //for key request
 tvApi.displayPairingKey().then(console.log, console.error);
 ```
 
 ## How to authorize to your TV
 
 ```js
-var TvApi = require('node-lgtv-api');
-var tvApi = new TvApi('192.168.0.5', '8080', '879540'); //for key request
+const TvApi = require("node-lgtv-api");
+const tvApi = new TvApi("192.168.0.5", "8080", "879540"); //for key request
 tvApi.authenticate().then(console.log, console.error);
 ```
 
@@ -60,7 +60,7 @@ tvApi.authenticate().then(() =>  tvApi.queryData(tvApi.TV_INFO_CHANNEL_LIST).the
 ## How to save a screenshot
 
 ```js
-tvApi.authenticate().then(() => tvApi.takeScreenShot().then(stream => stream.pipe(require('fs').createWriteStream('screen.jpg'))), console.error);
+tvApi.authenticate().then(() => tvApi.takeScreenShot().then(stream => stream.pipe(require("fs").createWriteStream("screen.jpg"))), console.error);
 ```
 
 ## How to launch an app
@@ -68,8 +68,8 @@ tvApi.authenticate().then(() => tvApi.takeScreenShot().then(stream => stream.pip
 ```js
 let requestedApp = [
     {
-        appname: 'Netflix',
-        auid: '00000000000112ae'
+        appname: "Netflix",
+        auid: "00000000000112ae"
     }
 ];
 
@@ -81,8 +81,8 @@ tvApi.authenticate().then(() => tvApi.processCommand(tvApi.TV_LAUNCH_APP, reques
 ```js
 let requestedApp = [
     {
-        appname: 'Netflix',
-        auid: '00000000000112ae'
+        appname: "Netflix",
+        auid: "00000000000112ae"
     }
 ];
 
