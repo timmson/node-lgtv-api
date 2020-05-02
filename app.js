@@ -20,7 +20,7 @@ function getOptions(body) {
 		options.body = body;
 	}
 
-	return body;
+	return options;
 }
 
 function LgTvApi(_host, _port, _pairingKey) {
