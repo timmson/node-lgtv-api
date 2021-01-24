@@ -2,7 +2,7 @@ const TvApi = require("../app");
 
 describe("TvApi Should ", () => {
 
-	it("instantiate", () => {
+	test("instantiate", () => {
 		const tvApi = new TvApi();
 
 		expect(tvApi).not.toBeUndefined();
