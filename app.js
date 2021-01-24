@@ -43,7 +43,7 @@ LgTvApi.prototype.displayPairingKey = function () {
 
 LgTvApi.prototype.authenticate = function () {
 	return new Promise((resolve, reject) => {
-		(this.pairingKey === null) ? reject(new Error("No pairing key. You need call displayPairingKey at first.")) : 0;
+		(this.pairingKey === null) ? reject(new Error("No pairing key. You should call displayPairingKey at first.")) : 0;
 		this.sendXMLRequest("/roap/api/auth", {auth: {type: "AuthReq", value: this.pairingKey}}).then(
 			data => {
 				xmlParser.parseString(data, (err, doc) => {
@@ -55,7 +55,7 @@ LgTvApi.prototype.authenticate = function () {
 
 LgTvApi.prototype.processCommand = function (commandName, parameters) {
 	return new Promise((resolve, reject) => {
-		(this.session === null) ? reject(new Error("No session id. You nead call authenticate at first.")) : 0;
+		(this.session === null) ? reject(new Error("No session id. You should call authenticate method at first.")) : 0;
 
 		if (!isNaN(parseInt(commandName)) && parameters.length === 0) {
 			parameters.value = commandName;
@@ -76,7 +76,7 @@ LgTvApi.prototype.processCommand = function (commandName, parameters) {
 
 LgTvApi.prototype.queryData = function (targetId) {
 	return new Promise((resolve, reject) => {
-		(this.session === null) ? reject(new Error("No session id. You nead call authenticate at first.")) : 0;
+		(this.session === null) ? reject(new Error("No session id. You should call authenticate method at first.")) : 0;
 		this.sendRequest("/roap/api/data?target=" + targetId).then(
 			data => {
 				xmlParser.parseString(data, (err, doc) => err ? reject(err) : resolve(doc.envelope.data));
