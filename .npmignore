@@ -17,4 +17,4 @@ test.js
 _config.yml
 
 # Other
-.eslintrc.js
+.eslintrc.json

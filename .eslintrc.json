@@ -1,4 +1,4 @@
-module.exports = {
+ {
 	"env": {
 		"node" : true,
 		"commonjs": true,
@@ -30,10 +30,10 @@ module.exports = {
 		],
 		"semi": [
 			"error",
-			"always"
+			"never"
 		],
 		"no-async-promise-executor" : [
 			"off"
 		]
 	}
-};
+}
