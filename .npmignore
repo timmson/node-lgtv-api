@@ -6,9 +6,11 @@ php_example/
 
 # Node modules
 node_modules/
+
+# Test
 test/
 test.js
-
+jest.config.js
 
 # Git
 .git
